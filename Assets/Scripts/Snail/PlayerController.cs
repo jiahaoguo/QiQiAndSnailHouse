@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -34,6 +35,14 @@ public class PlayerController : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
+        // ... (same as before)
+
+        // Check if the player has released all movement keys
+        if (movement == Vector2.zero && !hasReleasedKey)
+        {
+            StartCoroutine(ReleaseKeyDelay());
+        }
+
         // Normalize diagonal movement to prevent faster diagonal speed
         if (movement.magnitude > 1)
         {
@@ -59,6 +68,13 @@ public class PlayerController : MonoBehaviour
             hasReleasedKey = true;
         }
     }
+
+    IEnumerator ReleaseKeyDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+        hasReleasedKey = true;
+    }
+
 
     void FixedUpdate()
     {

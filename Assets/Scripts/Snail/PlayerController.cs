@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private GameObject lastActiveSprite;
     private Animator animator;
     private Vector2 previousMovement;
+    private bool hasReleasedKey;
 
     void Start()
     {
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         lastActiveSprite = playerFront; // Default sprite when idle
         previousMovement = Vector2.zero;
+        hasReleasedKey = true;
     }
 
     void Update()
@@ -50,12 +52,18 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("Move", false);
         }
+
+        // Check if the player has released all movement keys
+        if (movement == Vector2.zero)
+        {
+            hasReleasedKey = true;
+        }
     }
 
     void FixedUpdate()
     {
-        // Check if the player has changed direction
-        if (movement != Vector2.zero && movement != previousMovement)
+        // Check if the player has changed direction and has released the previous key
+        if (movement != Vector2.zero && movement != previousMovement && hasReleasedKey)
         {
             // Trigger the "Turn" animation
             animator.SetTrigger("Turn");
@@ -66,6 +74,9 @@ public class PlayerController : MonoBehaviour
 
             // Update previous movement direction
             previousMovement = movement;
+
+            // Reset the release key flag
+            hasReleasedKey = false;
         }
         else if (movement != Vector2.zero)
         {

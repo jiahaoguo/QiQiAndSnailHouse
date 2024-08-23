@@ -21,12 +21,16 @@ public class PlayerMovementController : MonoBehaviour
     protected Vector2 previousMovement;
     protected bool hasReleasedKey;
 
+    private Camera indoorCamera; // Reference to the Indoor tagged camera
 
     protected virtual void Start()
     {
         previousMovement = Vector2.zero;
         hasReleasedKey = true;
         targetPosition = transform.position;
+
+        // Find the camera with the tag "Indoor"
+        indoorCamera = GameObject.FindGameObjectWithTag("Indoor").GetComponent<Camera>();
     }
 
     protected virtual void Update()
@@ -54,7 +58,10 @@ public class PlayerMovementController : MonoBehaviour
             // Mouse click movement
             if (Input.GetMouseButtonDown(0))
             {
-                targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                if (indoorCamera != null)
+                {
+                    targetPosition = indoorCamera.ScreenToWorldPoint(Input.mousePosition);
+                }
             }
 
             // Calculate direction towards target
